@@ -1,37 +1,97 @@
 #include <iostream>
+#include <cstdlib>
+#include <string>
+#include <fstream> // scoreboard file io
 
 using namespace std;
 
+// Globals
+int board[3][3] = { {0, 0, 0}, {0, 0, 0}, {0, 0, 0} };
+int scoreboardWins = 0,
+    scoreboardLosses = 0,
+    scoreboardTies = 0;
+
+// Function Prototypes
 void resetBoard(int board[3][3]);   // resets all board values to 0 (blank)
 void printBoard(const int board[3][3]);   // prints current board to screen
 int checkWin(const int board[3][3]);     // checks for 3 in a row
-void playMove(const int board[3][3], const int player);
+void playMove(int board[3][3], const int player);
 
+void loadScoreboard();      // loads current values from ./doc/scoreboard.txt to global variables
+void updateScoreboard(const int gameResult);    // 0: win, 1: losses, 2: ties
+void printScoreboard();
+void resetScoreboard();     // reset scoreboard to 0
 
+// --------------------------------------------------------------------------
 int main()
 {
-    int board[3][3] = { {2, 0, 0}, {0, 0, 0}, {0, 0, 0} };
-
     bool gameRunning = 1,
         saveConfig = 0;
+
+    loadScoreboard();   // should this be loaded at launch, or before each win/loss/tie/scoreboard view?
+
     // temp testing variables
     int winner = 0;
+    int round = 0;
+
+
+    printBoard(board);
 
     while (int pie = 1) {
         playMove(board, 1);
-    }
+        system("cls");  // clear old board and replace with updated board
+        printBoard(board);
 
+        // BEGIN test for winner
+        winner = checkWin(board);
 
-    // test for winner
-    winner = checkWin(board);
-    if (winner == 1) {
-        cout << "Three in a row, X wins!" << endl;
-        //break;
-    } else if (winner == 2) {
-        cout << "Three in a row, O wins!" << endl;
-        //break;
-    } else {
-        winner = 0;
+        // if someone wins, breaks game loop. otherwise, continues
+        if (winner == 1) {
+            updateScoreboard(0);
+            printScoreboard();
+            break;
+        } else if (winner == 2) {
+            updateScoreboard(1);
+            printScoreboard();
+            break;
+        }
+        // END test for winner
+
+        round++;
+        if (round > 8) {
+            cout << "Game over, it's a tie!" << endl;
+            updateScoreboard(2);
+            printScoreboard();
+            break;
+        }
+
+        // PLAYER 2
+        playMove(board, 2);
+        system("cls");  // clear old board and replace with updated board
+        printBoard(board);
+
+        // BEGIN test for winner
+        winner = checkWin(board);
+
+        // if someone wins, breaks game loop. otherwise, continues
+        if (winner == 1) {
+            updateScoreboard(0);
+            printScoreboard();
+            break;
+        } else if (winner == 2) {
+            updateScoreboard(1);
+            printScoreboard();
+            break;
+        }
+        // END test for winner
+
+        round++;
+        if (round > 8) {
+            cout << "Game over, it's a tie!" << endl;
+            updateScoreboard(2);
+            printScoreboard();
+            break;
+        }
     }
 
 
@@ -234,28 +294,32 @@ void resetBoard(int board[3][3]) {
 }
 
 void printBoard(const int board[3][3]) {
+    cout << "    1 2 3" << endl;
     for (int row = 0; row < 3; ++row) {
+        switch (row) {
+        case 0: cout << " A "; break;
+        case 1: cout << " B "; break;
+        case 2: cout << " C "; break;
+        }
+
         for (int column = 0; column < 3; ++column) {
 
             switch (board[row][column]) {
-            case 0:
-                cout << " .";
-                break;
-            case 1:
-                cout << " X";
-                break;
-            case 2:
-                cout << " O";
-                break;
+            case 0: cout << " -"; break;
+            case 1: cout << " X"; break;
+            case 2: cout << " O"; break;
             }
 
         }
         // new row
         cout << endl;
     }
+    cout << endl;
 }
 
-int checkWin(const int board[3][3]) {
+// --------------------------------------------------------------------------
+int checkWin(const int board[3][3])
+{
     int winner = 0;
 
     // checks horizontal rows for win
@@ -301,14 +365,23 @@ int checkWin(const int board[3][3]) {
         }
     }
 
+    switch (winner) {
+    case 1: cout << "Three in a row, X wins!" << endl; break;
+    case 2: cout << "Three in a row, O wins!" << endl; break;
+    }
+
     return winner;
 }
 
-void playMove(const int board[3][3], const int player) {
-    int inputMove,
-        inputMoveRow,
-        inputMoveColumn;
+// --------------------------------------------------------------------------
+void playMove(int board[3][3], const int player)
+{
+    string inputMoveRow;
+    int inputMoveColumn,
+        inputMoveX,
+        inputMoveY;
     char playerSymbol;
+    locale loc;
 
     if (player == 1) {
         playerSymbol = 'X';
@@ -316,16 +389,21 @@ void playMove(const int board[3][3], const int player) {
         playerSymbol = 'O';
     }
 
-    cout << "Where would you like to play? (1-9)" << endl;
+    cout << "It's " << playerSymbol << "'s turn! \nWhere would you like to play? (A-C 1-3)" << endl;
 
     for (;;) {
         for (;;) {
             cout << ">> ";
-            cin >> inputMove;
+            cin >> inputMoveRow >> inputMoveColumn;
             cout << endl;
 
-            if (!cin.good() || inputMove < 1 || inputMove > 9) {
-                cout << "Invalid position! Input must be from 1-9." << endl;
+                // converts inputMoveColumn to lowercase
+            for (string::size_type i=0; i < inputMoveRow.length(); i++)
+                inputMoveRow[i] = std::toupper(inputMoveRow[i],loc);
+
+
+            if (!cin.good() || (inputMoveColumn < 1 || inputMoveColumn > 3) || (inputMoveRow != "A" && inputMoveRow != "B" && inputMoveRow != "C") ) {
+                cout << "Invalid position! Row must be from A-C and column from 1-3 (eg. A 1)." << endl;
                 cin.clear();
                 cin.ignore(128, '\n');
             } else {
@@ -334,53 +412,123 @@ void playMove(const int board[3][3], const int player) {
             }
         } // end of input error trap
 
-        switch (inputMove) {
+        if (inputMoveRow == "A") {
+            inputMoveX = 0;
+        } else if (inputMoveRow == "B") {
+            inputMoveX = 1;
+        } else {
+            inputMoveX = 2;
+        }
+
+        switch (inputMoveColumn) {
         case 1:
-            inputMoveRow = 0;
-            inputMoveColumn = 0;
+            inputMoveY = 0;
             break;
         case 2:
-            inputMoveRow = 0;
-            inputMoveColumn = 1;
+            inputMoveY = 1;
             break;
         case 3:
-            inputMoveRow = 0;
-            inputMoveColumn = 2;
-            break;
-        case 4:
-            inputMoveRow = 1;
-            inputMoveColumn = 0;
-            break;
-        case 5:
-            inputMoveRow = 1;
-            inputMoveColumn = 1;
-            break;
-        case 6:
-            inputMoveRow = 1;
-            inputMoveColumn = 2;
-            break;
-        case 7:
-            inputMoveRow = 2;
-            inputMoveColumn = 0;
-            break;
-        case 8:
-            inputMoveRow = 2;
-            inputMoveColumn = 1;
-            break;
-        case 9:
-            inputMoveRow = 2;
-            inputMoveColumn = 2;
+            inputMoveY = 2;
             break;
         }
 
-        if (board[inputMoveRow][inputMoveColumn] != 0) {
+        if (board[inputMoveX][inputMoveY] != 0) {
             cout << "Invalid position, that tile is not empty!" << endl;
         } else {
-            cout << "You placed an " << playerSymbol << " at tile " << inputMove << ". (" << inputMoveRow + 1 << ", " << inputMoveColumn + 1 << ")" << endl << endl;
+            cout << "You placed an " << playerSymbol << " at tile " << inputMoveRow << inputMoveColumn << ". (" << inputMoveX + 1 << ", " << inputMoveY + 1 << ")" << endl << endl;
+
+            board[inputMoveX][inputMoveY] = player;
             break;
         }
     } // end of valid move check error trap
 
+}
+
+/*
+ * == Scoreboard ==
+ * loading, updating, and printing scoreboard
+*/
+
+void loadScoreboard()
+{
+    try
+    {
+        ifstream inFile;
+        inFile.open("./doc/scoreboard.txt",ios::in);
+
+        inFile >> scoreboardWins;
+        inFile >> scoreboardLosses;
+        inFile >> scoreboardTies;
+
+        inFile.close();
+
+    } catch (exception X)
+    { cout << "File Error! Could not LOAD SCOREBOARD." << endl; }
+
+}
+
+// --------------------------------------------------------------------------
+void updateScoreboard(const int gameResult)
+{
+    try
+    {
+        // gameResult is the win, loss, or tie of a game.
+        // 0: win, 1: loss, 2: tie
+        switch (gameResult) {
+        case 0:
+            scoreboardWins++;
+            break;
+        case 1:
+            scoreboardLosses++;
+            break;
+        case 2:
+            scoreboardTies++;
+            break;
+        }
+
+        ofstream outFile;
+        outFile.open("./doc/scoreboard.txt",ios::out);
+
+        // endl is delimiter
+        outFile << scoreboardWins << endl;
+        outFile << scoreboardLosses << endl;
+        outFile << scoreboardTies;
+
+        outFile.close();
+    } catch (exception X)
+    { cerr << "File Error! Could not UPDATE SCOREBOARD." << endl; }
+
+}
+
+// --------------------------------------------------------------------------
+void printScoreboard()
+{
+    try
+    {
+        cout << "Wins: " << scoreboardWins << endl;
+        cout << "Losses: " << scoreboardLosses << endl;
+        cout << "Ties: " << scoreboardTies << endl;
+    }
+    catch (exception X)
+    { cerr << "File Error! Could not PRINT SCOREBOARD." << endl; }
+}
+
+// --------------------------------------------------------------------------
+void resetScoreboard()
+{
+    try
+    {
+        ofstream outFile;
+        outFile.open("./doc/scoreboard.txt",ios::out);
+
+        outFile << 0 << endl;
+        outFile << 0 << endl;
+        outFile << 0 << endl;
+
+        outFile.close();
+    }
+    catch (exception X)
+    { cerr << "File Error! Could not RESET SCOREBOARD." << endl; }
 }
 
 /*
