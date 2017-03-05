@@ -15,6 +15,7 @@ int scoreboardWins = 0,
 void resetBoard(int board[3][3]);   // resets all board values to 0 (blank)
 void printBoard(const int board[3][3]);   // prints current board to screen
 bool checkWin(const int board[3][3]);     // checks for 3 in a row
+bool checkTie(const int round);     // checks for tie
 void playMove(int board[3][3], const int player);
 
 void loadScoreboard();      // loads current values from ./doc/scoreboard.txt to global variables
@@ -34,7 +35,6 @@ int main()
     int winner = 0;
     int round = 0;
 
-
     printBoard(board);
 
     while (int pie = 1) {
@@ -47,10 +47,7 @@ int main()
         }
 
         round++;
-        if (round > 8) {
-            cout << "Game over, it's a tie!" << endl;
-            updateScoreboard(2);
-            printScoreboard();
+        if (checkTie(round)) {
             break;
         }
 
@@ -64,10 +61,7 @@ int main()
         }
 
         round++;
-        if (round > 8) {
-            cout << "Game over, it's a tie!" << endl;
-            updateScoreboard(2);
-            printScoreboard();
+        if (checkTie(round)) {
             break;
         }
     }
@@ -271,6 +265,7 @@ void resetBoard(int board[3][3]) {
     }
 }
 
+// --------------------------------------------------------------------------
 void printBoard(const int board[3][3]) {
     cout << "    1 2 3" << endl;
     for (int row = 0; row < 3; ++row) {
@@ -349,7 +344,22 @@ bool checkWin(const int board[3][3])
     }
 
     if (winner) {
+        loadScoreboard();
         updateScoreboard(winner);
+        printScoreboard();
+        return true;
+    }
+
+    return false;
+}
+
+// --------------------------------------------------------------------------
+bool checkTie(const int round)
+{
+    if (round > 8) {
+        cout << "Game, over, it's a tie!" << endl;
+        loadScoreboard();
+        updateScoreboard(0);
         printScoreboard();
         return true;
     }
@@ -460,13 +470,13 @@ void updateScoreboard(const int gameResult)
         // 0: win, 1: loss, 2: tie
         switch (gameResult) {
         case 0:
-            scoreboardWins++;
+            scoreboardTies++;
             break;
         case 1:
-            scoreboardLosses++;
+            scoreboardWins++;
             break;
         case 2:
-            scoreboardTies++;
+            scoreboardLosses++;
             break;
         }
 
