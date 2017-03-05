@@ -14,7 +14,7 @@ int scoreboardWins = 0,
 // Function Prototypes
 void resetBoard(int board[3][3]);   // resets all board values to 0 (blank)
 void printBoard(const int board[3][3]);   // prints current board to screen
-int checkWin(const int board[3][3]);     // checks for 3 in a row
+bool checkWin(const int board[3][3]);     // checks for 3 in a row
 void playMove(int board[3][3], const int player);
 
 void loadScoreboard();      // loads current values from ./doc/scoreboard.txt to global variables
@@ -42,20 +42,9 @@ int main()
         system("cls");  // clear old board and replace with updated board
         printBoard(board);
 
-        // BEGIN test for winner
-        winner = checkWin(board);
-
-        // if someone wins, breaks game loop. otherwise, continues
-        if (winner == 1) {
-            updateScoreboard(0);
-            printScoreboard();
-            break;
-        } else if (winner == 2) {
-            updateScoreboard(1);
-            printScoreboard();
+        if (checkWin(board)) {
             break;
         }
-        // END test for winner
 
         round++;
         if (round > 8) {
@@ -70,20 +59,9 @@ int main()
         system("cls");  // clear old board and replace with updated board
         printBoard(board);
 
-        // BEGIN test for winner
-        winner = checkWin(board);
-
-        // if someone wins, breaks game loop. otherwise, continues
-        if (winner == 1) {
-            updateScoreboard(0);
-            printScoreboard();
-            break;
-        } else if (winner == 2) {
-            updateScoreboard(1);
-            printScoreboard();
+        if (checkWin(board)) {
             break;
         }
-        // END test for winner
 
         round++;
         if (round > 8) {
@@ -318,7 +296,7 @@ void printBoard(const int board[3][3]) {
 }
 
 // --------------------------------------------------------------------------
-int checkWin(const int board[3][3])
+bool checkWin(const int board[3][3])
 {
     int winner = 0;
 
@@ -370,7 +348,13 @@ int checkWin(const int board[3][3])
     case 2: cout << "Three in a row, O wins!" << endl; break;
     }
 
-    return winner;
+    if (winner) {
+        updateScoreboard(winner);
+        printScoreboard();
+        return true;
+    }
+
+    return false;
 }
 
 // --------------------------------------------------------------------------
