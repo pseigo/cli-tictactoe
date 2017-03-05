@@ -303,12 +303,12 @@ bool checkWin(const int board[3][3])
     // checks horizontal rows for win
     for (int row = 0; row < 3; ++row) {
         // check if all 3 are == 1 or 2. if true, break and return 1 for winner 1 and 2 for winner 2. else 0 for no win.
-        if ( board[row][0] == board[row][1] == board[row][2] ) {
-            winner = board[row][0];
-
-            if (winner) {
-                break;
-            }
+        if ( (board[row][0] == 1 && board[row][1] == 1 && board[row][2] == 1) ) {
+            winner = 1;
+            break;
+        } else if ( (board[row][0] == 2 && board[row][1] == 2 && board[row][2] == 2) ) {
+            winner = 2;
+            break;
         }
     }
 
@@ -316,25 +316,30 @@ bool checkWin(const int board[3][3])
         // checks horizontal rows for win
         for (int column = 0; column < 3; ++column) {
             // check if all 3 are == 1 or 2. if true, break and return 1 for winner 1 and 2 for winner 2. else 0 for no win.
-            if ( board[0][column] == board[1][column] == board[2][column] ) {
-                winner = board[0][column];
-
-                if (winner) {
-                    break;
-                }
+            if ( (board[0][column] == 1 && board[1][column] == 1 && board[2][column] == 1) ) {
+                winner = 1;
+                break;
+            } else if ( (board[0][column] == 2 && board[1][column] == 2 && board[2][column] == 2) ) {
+                winner = 2;
+                break;
             }
+
         }
     }
 
     if (winner == 0) {
         // top left to bottom right
-        if ( board[0][0] == board[1][1] == board[2][2] ) {
-            winner = board[0][0];
+        if ( (board[0][0] == 1 && board[1][1] == 1 && board[2][2] == 1) ) {
+            winner = 1;
+        } else if ( (board[0][0] == 2 && board[1][1] == 2 && board[2][2] == 2) ) {
+            winner = 2;
         }
 
         // top right to bottom left
-        if ( winner == 0 && (board[0][2] == 1 && board[1][1] == 1 && board[2][0] == 1) ) {
-            winner = winner = board[0][2];
+        if ( (board[0][2] == 1 && board[1][1] == 1 && board[2][0] == 1) ) {
+            winner = 1;
+        } else if ( (board[0][2] == 2 && board[1][1] == 2 && board[2][0] == 2) ) {
+            winner = 2;
         }
     }
 
