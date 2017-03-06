@@ -32,3 +32,6 @@
 *.depend
 *.layout
 *.cbp
+
+# Generated Files
+doc/scoreboard.txt
