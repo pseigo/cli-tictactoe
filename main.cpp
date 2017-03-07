@@ -9,7 +9,6 @@
 using namespace std;
 
 // Globals
-int board[3][3] = { {0, 0, 0}, {0, 0, 0}, {0, 0, 0} };
 int scoreboardWins = 0,
     scoreboardLosses = 0,
     scoreboardTies = 0;
@@ -29,6 +28,7 @@ void resetScoreboard();     // reset scoreboard to 0
 // --------------------------------------------------------------------------
 int main()
 {
+    int board[3][3] = { {0, 0, 0}, {0, 0, 0}, {0, 0, 0} };
     bool gameRunning = 1,
         saveConfig = 0;
 
@@ -104,7 +104,7 @@ int main()
         cout << "Play with against a computer (PC vs AI) or a friend (PC vs PC)? \n"
                 "\t1: PC vs AI    2: PC vs PC" << endl;
 
-        for (;;) {
+        while (true) {
             cout << ">> ";
             cin >> choicePcAi;
             cout << endl;
@@ -125,7 +125,7 @@ int main()
                     "option 1 or 2. \n"
                     "\t1: Play first    2: Play second    3: Choose randomly" << endl;
 
-            for (;;) {
+            while (true) {
                 cout << ">> ";
                 cin >> choicePcOrder;
                 cout << endl;
@@ -142,7 +142,7 @@ int main()
             cout << "Do you want to play as X or O? \n"
                     "\t1: X    2: O" << endl;
 
-            for (;;) {
+            while (true) {
                 cout << ">> ";
                 cin >> choicePcSymbol;
                 cout << endl;
@@ -401,8 +401,8 @@ void playMove(int board[3][3], const int player)
 
     cout << "It's " << playerSymbol << "'s turn! \nWhere would you like to play? (A-C 1-3)" << endl;
 
-    for (;;) {
-        for (;;) {
+    while (true) {
+        while (true) {
             cout << ">> ";
             cin >> inputMoveRow >> inputMoveColumn;
             cout << endl;
