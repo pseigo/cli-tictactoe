@@ -31,12 +31,12 @@ class Ai
         void printConfig() const;
             // prints config, debug command
 
-        bool checkValidMove(int board[3][3], const int inputMoveX, const int inputMoveY);
+        bool checkValidMove(const int board[3][3], int inputMoveX, int inputMoveY);
 
         bool checkFirstMove(int board[3][3]);
             // plays if playing first move, if board is empty
 
-        void playMove(int board[3][3], const int player, const int inputMoveX, const int inputMoveY);
+        void playMove(int board[3][3], int player, int inputMoveX, int inputMoveY);
             // plays move on the board
 
 

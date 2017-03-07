@@ -24,7 +24,7 @@ void Ai::printConfig() const {
 
 
 
-bool Ai::checkValidMove(int board[3][3], const int inputMoveX, const int inputMoveY) {
+bool Ai::checkValidMove(const int board[3][3], int inputMoveX, int inputMoveY) {
     if (board[inputMoveX][inputMoveY] == 0) {
         return true;
     }
@@ -63,14 +63,12 @@ bool Ai::checkFirstMove(int board[3][3])
                 inputMoveX = 0, inputMoveY = 0;
 
                 lastCaseAttempt = 0;
-
                 break;
             case 2:
                 // cout << "top right" << endl;
                 inputMoveX = 0, inputMoveY = 2;
 
                 lastCaseAttempt = 1;
-
                 break;
             case 3:
                 // cout << "bottom left" << endl;
@@ -87,8 +85,8 @@ bool Ai::checkFirstMove(int board[3][3])
         }
 
         // if move was valid, break out of loop. if not, mark that case as invalid.
-        if (this->checkValidMove(board, inputMoveX, inputMoveY)) {
-            this->playMove(board, currentPlayer, inputMoveX, inputMoveY);
+        if (checkValidMove(board, inputMoveX, inputMoveY)) {
+            playMove(board, currentPlayer, inputMoveX, inputMoveY);
             moveFailure = false;
         } else {
             caseFail[lastCaseAttempt] = 1;
@@ -96,7 +94,7 @@ bool Ai::checkFirstMove(int board[3][3])
 
         // if every case is invalid, return false to indicate failure
         bool caseAllFail = true;
-        for (;;) {
+        while (true) {
             for (int caseCount = 0; caseCount < 4; caseCount++) {
                 if (caseFail[caseCount] == 0) {
                     caseAllFail = false;
@@ -117,7 +115,7 @@ bool Ai::checkFirstMove(int board[3][3])
     return true;
 }
 
-void Ai::playMove(int board[3][3], const int player, const int inputMoveX, const int inputMoveY)
+void Ai::playMove(int board[3][3], int player, int inputMoveX, int inputMoveY)
 {
     char playerSymbol;
     char gridMoveRow;
