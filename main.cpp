@@ -4,6 +4,8 @@
 #include <string>
 #include <fstream> // scoreboard file io
 
+#include "Ai.h"
+
 using namespace std;
 
 // Globals
@@ -24,142 +26,6 @@ void updateScoreboard(const int gameResult);    // 0: win, 1: losses, 2: ties
 void printScoreboard();
 void resetScoreboard();     // reset scoreboard to 0
 
-/*
- * == AI Class and Methods ==
-*/
-
-class Ai
-{
-private:
-    int currentPlayer;
-    int difficulty; // 0: easy 1: medium 2: hard
-
-public:
-    void setConfig(const int configPlayer, const int configDifficulty)
-    {
-        currentPlayer = configPlayer;
-        difficulty = configDifficulty;
-    }
-
-    void viewConfig()
-    {
-        cout << "The AI is playing as player " << currentPlayer << endl;
-        cout << "The AI is set to difficulty " << difficulty << endl;
-    }
-
-    /*
-    // --------------------------------------------------------------------------
-    void playMove(int board[3][3], const int player)
-    {
-        string inputMoveRow;
-        int inputMoveColumn,
-            inputMoveX,
-            inputMoveY;
-        char playerSymbol;
-        locale loc;
-
-        if (player == 1) {
-            playerSymbol = 'X';
-        } else {
-            playerSymbol = 'O';
-        }
-
-        cout << "It's " << playerSymbol << "'s turn! \nWhere would you like to play? (A-C 1-3)" << endl;
-
-        for (;;) {
-            for (;;) {
-                cout << ">> ";
-                cin >> inputMoveRow >> inputMoveColumn;
-                cout << endl;
-
-                    // converts inputMoveColumn to lowercase
-                for (string::size_type i=0; i < inputMoveRow.length(); i++)
-                    inputMoveRow[i] = std::toupper(inputMoveRow[i],loc);
-
-
-                if (!cin.good() || (inputMoveColumn < 1 || inputMoveColumn > 3) || (inputMoveRow != "A" && inputMoveRow != "B" && inputMoveRow != "C") ) {
-                    cout << "Invalid position! Row must be from A-C and column from 1-3 (eg. A 1)." << endl;
-                    cin.clear();
-                    cin.ignore(128, '\n');
-                } else {
-                    cin.ignore(128, '\n');
-                    break;
-                }
-            } // end of input error trap
-
-            if (inputMoveRow == "A") {
-                inputMoveX = 0;
-            } else if (inputMoveRow == "B") {
-                inputMoveX = 1;
-            } else {
-                inputMoveX = 2;
-            }
-
-            switch (inputMoveColumn) {
-            case 1:
-                inputMoveY = 0;
-                break;
-            case 2:
-                inputMoveY = 1;
-                break;
-            case 3:
-                inputMoveY = 2;
-                break;
-            }
-
-            if (board[inputMoveX][inputMoveY] != 0) {
-                cout << "Invalid position, that tile is not empty!" << endl;
-            } else {
-                cout << "You placed an " << playerSymbol << " at tile " << inputMoveRow << inputMoveColumn << ". (" << inputMoveX + 1 << ", " << inputMoveY + 1 << ")" << endl << endl;
-
-                board[inputMoveX][inputMoveY] = player;
-                break;
-            }
-        } // end of valid move check error trap
-
-    }
-    */
-
-    // if functions return 1, end loop. if 0, keep going through list of priorites
-
-    bool firstMoveCheck(const int board[3][3])
-    {
-        for (int row = 0; row < 3; ++row) {
-            for (int column = 0; column < 3; ++column) {
-                if (board[row][column] != 0) {
-                    // found something other than 0, therefore board is not empty
-                    return false;
-                }
-            }
-        }
-
-        int rngMin = 1,
-            rngMax = 4;
-
-        switch (rand() % (rngMax - rngMin + 1) + rngMin) {
-            case 1:
-                cout << "top left" << endl;
-                break;
-            case 2:
-                cout << "top right" << endl;
-                break;
-            case 3:
-                cout << "bottom left" << endl;
-                break;
-            case 4:
-                cout << "bottom right" << endl;
-                break;
-        }
-
-        //this->playMove(board, currentPlayer);
-
-        // first move condition
-        return true;
-    }
-
-};
-
-
 // --------------------------------------------------------------------------
 int main()
 {
@@ -168,12 +34,16 @@ int main()
 
     srand(time(0)); // AI rng seed
 
+    printBoard(board);
 
-    Ai aiOne;
-    aiOne.setConfig(1, 2);
-    aiOne.viewConfig();
-    //cout << endl;
-    //cout << aiOne.firstMoveCheck(board) << endl;
+    Ai AiOne(2, 3);
+    AiOne.printConfig();
+    cout << AiOne.checkFirstMove(board) << endl;
+    //AiOne.playMove(board, 2, 0, 0);
+    //AiOne.playMove(board, 2, 0, 2);
+
+    printBoard(board);
+
 
 
 
