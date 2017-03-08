@@ -33,11 +33,8 @@ bool Ai::checkValidMove(const int board[3][3], int inputMoveX, int inputMoveY) {
     return false;
 }
 
-// if functions return 1, end loop. if 0, keep going through list of priorites
-
-bool Ai::checkFirstMove(int board[3][3])
+bool Ai::isBoardEmpty(const int board[3][3])
 {
-    // is the board empty?
     for (int row = 0; row < 3; ++row) {
         for (int column = 0; column < 3; ++column) {
             if (board[row][column] != 0) {
@@ -45,6 +42,17 @@ bool Ai::checkFirstMove(int board[3][3])
                 return false;
             }
         }
+    }
+
+    return true;
+}
+
+// if functions return 1, end loop. if 0, keep going through list of priorites
+
+bool Ai::checkFirstMove(int board[3][3])
+{
+    if (!isBoardEmpty(board)) {
+        return false;
     }
 
     int inputMoveX,
@@ -111,7 +119,6 @@ bool Ai::checkFirstMove(int board[3][3])
 
     }
 
-    // first move condition
     return true;
 }
 

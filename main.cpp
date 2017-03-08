@@ -32,12 +32,11 @@ int main()
     bool gameRunning = 1,
         saveConfig = 0;
 
-    srand(time(0)); // AI rng seed
+    srand( unsigned(time(0)) ); // AI rng seed
 
     printBoard(board);
 
     Ai AiOne(2, 3);
-    AiOne.printConfig();
     cout << AiOne.checkFirstMove(board) << endl;
     //AiOne.playMove(board, 2, 0, 0);
     //AiOne.playMove(board, 2, 0, 2);

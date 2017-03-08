@@ -33,6 +33,8 @@ class Ai
 
         bool checkValidMove(const int board[3][3], int inputMoveX, int inputMoveY);
 
+        bool isBoardEmpty(const int board[3][3]);
+
         bool checkFirstMove(int board[3][3]);
             // plays if playing first move, if board is empty
 
