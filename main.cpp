@@ -37,7 +37,7 @@ int main()
     printBoard(board);
 
     Ai AiOne(2, 3);
-    cout << AiOne.checkFirstMove(board) << endl;
+    cout << AiOne.playFirstMove(board, 2) << endl;
     //AiOne.playMove(board, 2, 0, 0);
     //AiOne.playMove(board, 2, 0, 2);
 
@@ -300,6 +300,7 @@ void printBoard(const int board[3][3]) {
             case 0: cout << " -"; break;
             case 1: cout << " X"; break;
             case 2: cout << " O"; break;
+            default: cout << " n"; break;
             }
 
         }

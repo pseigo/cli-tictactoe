@@ -24,7 +24,7 @@ void Ai::printConfig() const {
 
 
 
-bool Ai::checkValidMove(const int board[3][3], int inputMoveX, int inputMoveY) {
+bool Ai::isValidMove(const int board[3][3], int inputMoveX, int inputMoveY) {
     if (board[inputMoveX][inputMoveY] == 0) {
         return true;
     }
@@ -47,14 +47,71 @@ bool Ai::isBoardEmpty(const int board[3][3])
     return true;
 }
 
+void Ai::playMove(int board[3][3], int player, int inputMoveX, int inputMoveY)
+{
+    char playerSymbol;
+    char gridMoveRow;
+    int gridMoveColumn;
+
+    if (player == 1) {
+        playerSymbol = 'X';
+    } else {
+        playerSymbol = 'O';
+    }
+
+    // converts to readable grid coordinates for output
+    switch (inputMoveX) {
+    case 0:
+        gridMoveRow = 'A';
+        break;
+    case 1:
+        gridMoveRow = 'B';
+        break;
+    case 2:
+        gridMoveRow = 'C';
+        break;
+    }
+
+    gridMoveColumn = inputMoveY + 1;
+
+    cout << "It's " << playerSymbol << "'s turn!" << endl;
+    cout << "AI placed an " << playerSymbol << " at tile " << gridMoveRow << gridMoveColumn << ". (" << inputMoveX + 1 << ", " << inputMoveY + 1 << ")" << endl << endl;
+
+    board[inputMoveX][inputMoveY] = player;
+}
+
 // if functions return 1, end loop. if 0, keep going through list of priorites
 
-bool Ai::checkFirstMove(int board[3][3])
+bool Ai::playFirstMove(int board[3][3], int currentPlayer)
 {
     if (!isBoardEmpty(board)) {
         return false;
     }
 
+    const int numLocations = 4;
+    vector<pair<int, int> > locations;
+    locations.push_back(make_pair(0, 0));
+    locations.push_back(make_pair(0, 2));
+    locations.push_back(make_pair(2, 0));
+    locations.push_back(make_pair(2, 2));
+
+    random_shuffle(locations.begin(), locations.end());
+
+    int i = 0;
+    for (; i < numLocations; ++i) {
+        if (isValidMove(board, locations[i].first, locations[i].second)) {
+            // do the move
+            playMove(board, currentPlayer, locations[i].first, locations[i].second);
+            return true;
+        } // else do nothing & try the next move
+    }
+
+    if (i == numLocations) {
+        // all corners were occupied
+        return false;
+    }
+
+    /* old, inefficient method
     int inputMoveX,
         inputMoveY,
         rngMin = 1,
@@ -120,37 +177,6 @@ bool Ai::checkFirstMove(int board[3][3])
     }
 
     return true;
+    */
 }
 
-void Ai::playMove(int board[3][3], int player, int inputMoveX, int inputMoveY)
-{
-    char playerSymbol;
-    char gridMoveRow;
-    int gridMoveColumn;
-
-    if (player == 1) {
-        playerSymbol = 'X';
-    } else {
-        playerSymbol = 'O';
-    }
-
-    // converts to readable grid coordinates for output
-    switch (inputMoveX) {
-    case 0:
-        gridMoveRow = 'A';
-        break;
-    case 1:
-        gridMoveRow = 'B';
-        break;
-    case 2:
-        gridMoveRow = 'C';
-        break;
-    }
-
-    gridMoveColumn = inputMoveY + 1;
-
-    cout << "It's " << playerSymbol << "'s turn!" << endl;
-    cout << "AI placed an " << playerSymbol << " at tile " << gridMoveRow << gridMoveColumn << ". (" << inputMoveX + 1 << ", " << inputMoveY + 1 << ")" << endl << endl;
-
-    board[inputMoveX][inputMoveY] = player;
-}

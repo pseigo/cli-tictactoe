@@ -4,6 +4,8 @@
 #include <string>
 #include <cstdlib> // rng
 #include <time.h> // time
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -31,15 +33,16 @@ class Ai
         void printConfig() const;
             // prints config, debug command
 
-        bool checkValidMove(const int board[3][3], int inputMoveX, int inputMoveY);
+        bool isValidMove(const int board[3][3], int inputMoveX, int inputMoveY);
 
         bool isBoardEmpty(const int board[3][3]);
 
-        bool checkFirstMove(int board[3][3]);
-            // plays if playing first move, if board is empty
-
         void playMove(int board[3][3], int player, int inputMoveX, int inputMoveY);
             // plays move on the board
+
+        bool playFirstMove(int board[3][3], int currentPlayer);
+            // plays if playing first move, if board is empty
+
 
 
 };
