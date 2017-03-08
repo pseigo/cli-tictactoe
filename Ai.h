@@ -17,6 +17,7 @@ class Ai
     private:
         int currentPlayer;
         int difficulty; // 0: easy 1: medium 2: hard
+        char playerSymbol;
 
     public:
         // Default Constructor
@@ -37,12 +38,13 @@ class Ai
 
         bool isBoardEmpty(const int board[3][3]);
 
-        void playMove(int board[3][3], int player, int inputMoveX, int inputMoveY);
+        void playMove(int board[3][3], int inputMoveX, int inputMoveY);
             // plays move on the board
 
-        bool playFirstMove(int board[3][3], int currentPlayer);
-            // plays if playing first move, if board is empty
+        bool playWinningMove(int board[3][3]);
 
+        bool playFirstMove(int board[3][3]);
+            // plays if playing first move, if board is empty
 
 
 };

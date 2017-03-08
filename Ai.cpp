@@ -5,11 +5,18 @@
 Ai::Ai() {
     currentPlayer = 2;
     difficulty = 2;
+    playerSymbol = 'O';
 }
 
 Ai::Ai(int configPlayer, int configDifficulty) {
     currentPlayer = configPlayer;
     difficulty = configDifficulty;
+
+    if (currentPlayer == 1) {
+        playerSymbol = 'X';
+    } else {
+        playerSymbol = 'O';
+    }
 }
 
 Ai::~Ai()
@@ -21,8 +28,6 @@ void Ai::printConfig() const {
     cout << "The AI is playing as player " << currentPlayer << endl;
     cout << "The AI is set to difficulty " << difficulty << endl;
 }
-
-
 
 bool Ai::isValidMove(const int board[3][3], int inputMoveX, int inputMoveY) {
     if (board[inputMoveX][inputMoveY] == 0) {
@@ -47,17 +52,10 @@ bool Ai::isBoardEmpty(const int board[3][3])
     return true;
 }
 
-void Ai::playMove(int board[3][3], int player, int inputMoveX, int inputMoveY)
+void Ai::playMove(int board[3][3], int inputMoveX, int inputMoveY)
 {
-    char playerSymbol;
     char gridMoveRow;
     int gridMoveColumn;
-
-    if (player == 1) {
-        playerSymbol = 'X';
-    } else {
-        playerSymbol = 'O';
-    }
 
     // converts to readable grid coordinates for output
     switch (inputMoveX) {
@@ -77,12 +75,84 @@ void Ai::playMove(int board[3][3], int player, int inputMoveX, int inputMoveY)
     cout << "It's " << playerSymbol << "'s turn!" << endl;
     cout << "AI placed an " << playerSymbol << " at tile " << gridMoveRow << gridMoveColumn << ". (" << inputMoveX + 1 << ", " << inputMoveY + 1 << ")" << endl << endl;
 
-    board[inputMoveX][inputMoveY] = player;
+    board[inputMoveX][inputMoveY] = currentPlayer;
 }
 
 // if functions return 1, end loop. if 0, keep going through list of priorites
 
-bool Ai::playFirstMove(int board[3][3], int currentPlayer)
+bool Ai::playWinningMove(int board[3][3]) {
+    bool winner = false;
+
+    // checks horizontal rows for win
+    for (int row = 0; row < 3; ++row) {
+
+        // X X -
+        if (board[row][0] == currentPlayer && board[row][1] == currentPlayer && board[row][2] == 0) {
+            // play move in (row, 2)
+            playMove(board, row, 2)
+            winner = true;
+            break;
+        }
+
+        // X - X
+        if (board[row][0] == currentPlayer && board[row][2] == currentPlayer && board[row][1] == 0) {
+            // play move in (row, 1)
+            playMove(board, row, 1)
+            winner = true;
+            break;
+        }
+
+        // - X X
+        if (board[row][0] == currentPlayer && board[row][1] == currentPlayer && board[row][2] == 0) {
+            // play move in (row, 0)
+            playMove(board, row, 0)
+            winner = true;
+            break;
+        }
+    }
+
+    /*
+    if (winner == 0) {
+        // checks horizontal rows for win
+        for (int column = 0; column < 3; ++column) {
+            // check if all 3 are == 1 or 2. if true, break and return 1 for winner 1 and 2 for winner 2. else 0 for no win.
+            if (board[0][column] == board[1][column] && board[0][column] == board[2][column]) {
+                winner = board[0][column];
+
+                if (winner) {
+                    break;
+                }
+            }
+
+        }
+    }
+
+    if (winner == 0) {
+        // top left to bottom right
+        if (board[0][0] == board[1][1] && board[0][0] == board[2][2]) {
+            winner = board[0][0];
+        }
+
+        // top right to bottom left
+        if (winner == 0 && (board[0][2] == board[1][1] && board[0][2] == board[2][0])) {
+            winner = winner = board[0][2];
+        }
+    }
+    */
+
+    if (winner) {
+        cout << "Three in a row, " << playerSymbol << " wins!" << endl;
+
+        loadScoreboard();
+        updateScoreboard(2);
+        printScoreboard();
+        return true;
+    }
+
+    return false;
+}
+
+bool Ai::playFirstMove(int board[3][3])
 {
     if (!isBoardEmpty(board)) {
         return false;
@@ -101,7 +171,7 @@ bool Ai::playFirstMove(int board[3][3], int currentPlayer)
     for (; i < numLocations; ++i) {
         if (isValidMove(board, locations[i].first, locations[i].second)) {
             // do the move
-            playMove(board, currentPlayer, locations[i].first, locations[i].second);
+            playMove(board, locations[i].first, locations[i].second);
             return true;
         } // else do nothing & try the next move
     }

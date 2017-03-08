@@ -37,7 +37,7 @@ int main()
     printBoard(board);
 
     Ai AiOne(2, 3);
-    cout << AiOne.playFirstMove(board, 2) << endl;
+    cout << AiOne.playFirstMove(board) << endl;
     //AiOne.playMove(board, 2, 0, 0);
     //AiOne.playMove(board, 2, 0, 2);
 
