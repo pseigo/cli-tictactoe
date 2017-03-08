@@ -3,9 +3,9 @@
 #include <iostream>
 #include <string>
 #include <cstdlib> // rng
-#include <time.h> // time
-#include <vector>
-#include <algorithm>
+#include <ctime> // time
+#include <vector> // vector
+#include <algorithm> // random_shuffle
 
 using namespace std;
 

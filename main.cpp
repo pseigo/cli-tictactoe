@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstdlib> // rng
-#include <time.h> // time
+#include <ctime> // time
 #include <string>
 #include <fstream> // scoreboard file io
 
