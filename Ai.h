@@ -44,7 +44,7 @@ class Ai
         bool playWinningMove(int board[3][3]);
 
         bool playFirstMove(int board[3][3]);
-            // plays if playing first move, if board is empty
+            // plays if board is empty
 
 
 };

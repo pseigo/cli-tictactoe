@@ -16,7 +16,7 @@ int scoreboardWins = 0,
 // Function Prototypes
 void resetBoard(int board[3][3]);   // resets all board values to 0 (blank)
 void printBoard(const int board[3][3]);   // prints current board to screen
-bool checkWin(const int board[3][3]);     // checks for 3 in a row
+bool checkWin(const int board[3][3], int pcPlayer);     // pcPlayer 0: no scoreboard for pc/pc or ai/ai, 1: pc is X, 2: pc is O
 bool checkTie(const int round);     // checks for tie
 void playMove(int board[3][3], const int player);
 
@@ -34,33 +34,55 @@ int main()
 
     srand( unsigned(time(0)) ); // AI rng seed
 
-    printBoard(board);
-
-    Ai AiOne(2, 3);
-    cout << AiOne.playFirstMove(board) << endl;
-    //AiOne.playMove(board, 2, 0, 0);
-    //AiOne.playMove(board, 2, 0, 2);
-
-    printBoard(board);
-
-
-
 
     /*
+    Ai AiOne(2, 3);
+    switch (1) {
+        case 1:
+            if (AiOne.playFirstMove(board))
+                break;
+        case 2:
+            if (AiOne.playWinningMove(board))
+                break;
+        default:
+            cout << "ERROR! AI was unable to play a valid move." << endl;
+    }
+    printBoard(board);
+    checkWin(board, 1);
+    */
+
+
+
     loadScoreboard();   // should this be loaded at launch, or before each win/loss/tie/scoreboard view?
 
     // temp testing variables
     int winner = 0;
     int round = 0;
+    Ai AiOne(2, 3); // O, hard
 
     printBoard(board);
 
     while (int pie = 1) {
-        playMove(board, 1);
-        system("cls");  // clear old board and replace with updated board
+
+        cout << "------- turn " << round + 1 << " -------" << endl;
+
+        // PLAYER 2: AiOne
+        // AI Move Priority: breaks if move is successful
+        switch (1) {
+            case 1:
+                if (AiOne.playFirstMove(board))
+                    break;
+            case 2:
+                if (AiOne.playWinningMove(board))
+                    break;
+            default:
+                cout << "ERROR, nothing happened! AI was unable to play a valid move." << endl;
+        }
+
+        //system("cls");  // clear old board and replace with updated board
         printBoard(board);
 
-        if (checkWin(board)) {
+        if (checkWin(board, 1)) {
             break;
         }
 
@@ -69,12 +91,14 @@ int main()
             break;
         }
 
-        // PLAYER 2
-        playMove(board, 2);
+        cout << "------- turn " << round + 1 << " -------" << endl;
+
+                // PLAYER 1: PcOne
+        playMove(board, 1);
         system("cls");  // clear old board and replace with updated board
         printBoard(board);
 
-        if (checkWin(board)) {
+        if (checkWin(board, 1)) {
             break;
         }
 
@@ -83,7 +107,6 @@ int main()
             break;
         }
     }
-    */
 
 
     /* testing functions rn
@@ -311,7 +334,7 @@ void printBoard(const int board[3][3]) {
 }
 
 // --------------------------------------------------------------------------
-bool checkWin(const int board[3][3])
+bool checkWin(const int board[3][3], int pcPlayer) // pcPlayer 0: disable scoreboard 1: pc is playing X 2: pc is playing O
 {
     int winner = 0;
 
@@ -328,7 +351,7 @@ bool checkWin(const int board[3][3])
     }
 
     if (winner == 0) {
-        // checks horizontal rows for win
+        // checks vertical columns for win
         for (int column = 0; column < 3; ++column) {
             // check if all 3 are == 1 or 2. if true, break and return 1 for winner 1 and 2 for winner 2. else 0 for no win.
             if (board[0][column] == board[1][column] && board[0][column] == board[2][column]) {
@@ -359,10 +382,23 @@ bool checkWin(const int board[3][3])
     case 2: cout << "Three in a row, O wins!" << endl; break;
     }
 
+    // only update scoreboard if playing pc/ai. if ai/ai or pc/pc, don't update scoreboard.
+
     if (winner) {
-        loadScoreboard();
-        updateScoreboard(winner);
-        printScoreboard();
+        if (pcPlayer == winner) {
+            loadScoreboard();
+            updateScoreboard(1); // win
+            printScoreboard();
+            cout << endl;
+        } else if (pcPlayer == 0) {
+            return true; // disabled scoreboard
+        } else {
+            loadScoreboard();
+            updateScoreboard(2); // loss
+            printScoreboard();
+            cout << endl;
+        }
+
         return true;
     }
 
@@ -445,7 +481,7 @@ void playMove(int board[3][3], const int player)
         if (board[inputMoveX][inputMoveY] != 0) {
             cout << "Invalid position, that tile is not empty!" << endl;
         } else {
-            cout << "You placed an " << playerSymbol << " at tile " << inputMoveRow << inputMoveColumn << ". (" << inputMoveX + 1 << ", " << inputMoveY + 1 << ")" << endl << endl;
+            cout << "You placed an " << playerSymbol << " at tile " << inputMoveRow << " " << inputMoveColumn << ". (" << inputMoveX + 1 << ", " << inputMoveY + 1 << ")" << endl << endl;
 
             board[inputMoveX][inputMoveY] = player;
             break;
@@ -483,7 +519,7 @@ void updateScoreboard(const int gameResult)
     try
     {
         // gameResult is the win, loss, or tie of a game.
-        // 0: win, 1: loss, 2: tie
+        // 0: tie, 1: win, 2: loss
         switch (gameResult) {
         case 0:
             scoreboardTies++;
@@ -515,9 +551,12 @@ void printScoreboard()
 {
     try
     {
+        cout << "=============== \n" <<
+                "SCOREBOARD" << endl;
         cout << "Wins: " << scoreboardWins << endl;
         cout << "Losses: " << scoreboardLosses << endl;
         cout << "Ties: " << scoreboardTies << endl;
+        cout << "===============" << endl;
     }
     catch (exception X)
     { cerr << "File Error! Could not PRINT SCOREBOARD." << endl; }

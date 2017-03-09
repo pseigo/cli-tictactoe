@@ -73,7 +73,7 @@ void Ai::playMove(int board[3][3], int inputMoveX, int inputMoveY)
     gridMoveColumn = inputMoveY + 1;
 
     cout << "It's " << playerSymbol << "'s turn!" << endl;
-    cout << "AI placed an " << playerSymbol << " at tile " << gridMoveRow << gridMoveColumn << ". (" << inputMoveX + 1 << ", " << inputMoveY + 1 << ")" << endl << endl;
+    cout << "AI placed an " << playerSymbol << " at tile " << gridMoveRow << " " << gridMoveColumn << ". (" << inputMoveX + 1 << ", " << inputMoveY + 1 << ")" << endl << endl;
 
     board[inputMoveX][inputMoveY] = currentPlayer;
 }
@@ -86,42 +86,45 @@ bool Ai::playWinningMove(int board[3][3]) {
     // checks horizontal rows for win
     for (int row = 0; row < 3; ++row) {
 
-        // X X -
+        // X X - (horizontal)
         if (board[row][0] == currentPlayer && board[row][1] == currentPlayer && board[row][2] == 0) {
-            // play move in (row, 2)
-            playMove(board, row, 2)
-            winner = true;
-            break;
+            playMove(board, row, 2);
+            return true;
         }
 
-        // X - X
+        // X - X (horizontal)
         if (board[row][0] == currentPlayer && board[row][2] == currentPlayer && board[row][1] == 0) {
-            // play move in (row, 1)
-            playMove(board, row, 1)
-            winner = true;
-            break;
+            playMove(board, row, 1);
+            return true;
         }
 
-        // - X X
-        if (board[row][0] == currentPlayer && board[row][1] == currentPlayer && board[row][2] == 0) {
-            // play move in (row, 0)
-            playMove(board, row, 0)
-            winner = true;
-            break;
+        // - X X (horizontal)
+        if (board[row][1] == currentPlayer && board[row][2] == currentPlayer && board[row][0] == 0) {
+            playMove(board, row, 0);
+            return true;
         }
     }
 
-    /*
-    if (winner == 0) {
-        // checks horizontal rows for win
+    if (winner == false) {
+        // checks vertical columns for win
         for (int column = 0; column < 3; ++column) {
-            // check if all 3 are == 1 or 2. if true, break and return 1 for winner 1 and 2 for winner 2. else 0 for no win.
-            if (board[0][column] == board[1][column] && board[0][column] == board[2][column]) {
-                winner = board[0][column];
 
-                if (winner) {
-                    break;
-                }
+            // X X - (vertical)
+            if (board[0][column] == currentPlayer && board[1][column] == currentPlayer && board[2][column] == 0) {
+                playMove(board, 2, column);
+                return true;
+            }
+
+            // X - X (vertical)
+            if (board[0][column] == currentPlayer && board[2][column] == currentPlayer && board[1][column] == 0) {
+                playMove(board, 1, column);
+                return true;
+            }
+
+            // - X X (vertical)
+            if (board[1][column] == currentPlayer && board[2][column] == currentPlayer && board[0][column] == 0) {
+                playMove(board, 0, column);
+                return true;
             }
 
         }
@@ -129,24 +132,54 @@ bool Ai::playWinningMove(int board[3][3]) {
 
     if (winner == 0) {
         // top left to bottom right
-        if (board[0][0] == board[1][1] && board[0][0] == board[2][2]) {
-            winner = board[0][0];
+        /*  X - -
+            *  - X -
+            *  - - -  */
+        if (board[0][0] == currentPlayer && board[1][1] == currentPlayer && board[2][2] == 0) {
+            playMove(board, 2, 2);
+            return true;
+        }
+
+        /*  X - -
+            *  - - -
+            *  - - X  */
+        if (board[0][0] == currentPlayer && board[2][2] == currentPlayer && board[1][1] == 0) {
+            playMove(board, 1, 1);
+            return true;
+        }
+
+        /*  - - -
+            *  - X -
+            *  - - X  */
+        if (board[1][1] == currentPlayer && board[2][2] == currentPlayer && board[0][0] == 0) {
+            playMove(board, 0, 0);
+            return true;
         }
 
         // top right to bottom left
-        if (winner == 0 && (board[0][2] == board[1][1] && board[0][2] == board[2][0])) {
-            winner = winner = board[0][2];
+        /*  - - X
+            *  - X -
+            *  - - -  */
+        if (board[0][2] == currentPlayer && board[1][1] == currentPlayer && board[2][0] == 0) {
+            playMove(board, 2, 0);
+            return true;
         }
-    }
-    */
 
-    if (winner) {
-        cout << "Three in a row, " << playerSymbol << " wins!" << endl;
+        /*  - - X
+            *  - - -
+            *  X - -  */
+        if (board[0][2] == currentPlayer && board[2][0] == currentPlayer && board[1][1] == 0) {
+            playMove(board, 1, 1);
+            return true;
+        }
 
-        loadScoreboard();
-        updateScoreboard(2);
-        printScoreboard();
-        return true;
+        /*  - - -
+            *  - X -
+            *  X - -  */
+        if (board[1][1] == currentPlayer && board[2][0] == currentPlayer && board[0][2] == 0) {
+            playMove(board, 0, 2);
+            return true;
+        }
     }
 
     return false;
