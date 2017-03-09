@@ -4,6 +4,7 @@
 
 Ai::Ai() {
     currentPlayer = 2;
+    enemyPlayer = 1;
     difficulty = 2;
     playerSymbol = 'O';
 }
@@ -16,6 +17,12 @@ Ai::Ai(int configPlayer, int configDifficulty) {
         playerSymbol = 'X';
     } else {
         playerSymbol = 'O';
+    }
+
+    if (currentPlayer == 1) {
+        enemyPlayer = 2;
+    } else {
+        enemyPlayer = 1;
     }
 }
 
@@ -105,81 +112,77 @@ bool Ai::playWinningMove(int board[3][3]) {
         }
     }
 
-    if (winner == false) {
-        // checks vertical columns for win
-        for (int column = 0; column < 3; ++column) {
+    // checks vertical columns for win
+    for (int column = 0; column < 3; ++column) {
 
-            // X X - (vertical)
-            if (board[0][column] == currentPlayer && board[1][column] == currentPlayer && board[2][column] == 0) {
-                playMove(board, 2, column);
-                return true;
-            }
-
-            // X - X (vertical)
-            if (board[0][column] == currentPlayer && board[2][column] == currentPlayer && board[1][column] == 0) {
-                playMove(board, 1, column);
-                return true;
-            }
-
-            // - X X (vertical)
-            if (board[1][column] == currentPlayer && board[2][column] == currentPlayer && board[0][column] == 0) {
-                playMove(board, 0, column);
-                return true;
-            }
-
+        // X X - (vertical)
+        if (board[0][column] == currentPlayer && board[1][column] == currentPlayer && board[2][column] == 0) {
+            playMove(board, 2, column);
+            return true;
         }
+
+        // X - X (vertical)
+        if (board[0][column] == currentPlayer && board[2][column] == currentPlayer && board[1][column] == 0) {
+            playMove(board, 1, column);
+            return true;
+        }
+
+        // - X X (vertical)
+        if (board[1][column] == currentPlayer && board[2][column] == currentPlayer && board[0][column] == 0) {
+            playMove(board, 0, column);
+            return true;
+        }
+
     }
 
-    if (winner == 0) {
-        // top left to bottom right
-        /*  X - -
-            *  - X -
-            *  - - -  */
-        if (board[0][0] == currentPlayer && board[1][1] == currentPlayer && board[2][2] == 0) {
-            playMove(board, 2, 2);
-            return true;
-        }
+    // top left to bottom right
+    /*  X - -
+     *  - X -
+     *  - - -  */
+    if (board[0][0] == currentPlayer && board[1][1] == currentPlayer && board[2][2] == 0) {
+        playMove(board, 2, 2);
+        return true;
+    }
 
-        /*  X - -
-            *  - - -
-            *  - - X  */
-        if (board[0][0] == currentPlayer && board[2][2] == currentPlayer && board[1][1] == 0) {
-            playMove(board, 1, 1);
-            return true;
-        }
+    /*  X - -
+     *  - - -
+     *  - - X  */
+    if (board[0][0] == currentPlayer && board[2][2] == currentPlayer && board[1][1] == 0) {
+        playMove(board, 1, 1);
+        return true;
+    }
 
-        /*  - - -
-            *  - X -
-            *  - - X  */
-        if (board[1][1] == currentPlayer && board[2][2] == currentPlayer && board[0][0] == 0) {
-            playMove(board, 0, 0);
-            return true;
-        }
+    /*  - - -
+     *  - X -
+     *  - - X  */
+    if (board[1][1] == currentPlayer && board[2][2] == currentPlayer && board[0][0] == 0) {
+        playMove(board, 0, 0);
+        return true;
+    }
 
-        // top right to bottom left
-        /*  - - X
-            *  - X -
-            *  - - -  */
-        if (board[0][2] == currentPlayer && board[1][1] == currentPlayer && board[2][0] == 0) {
-            playMove(board, 2, 0);
-            return true;
-        }
+    // top right to bottom left
+    /*  - - X
+     *  - X -
+     *  - - -  */
+    if (board[0][2] == currentPlayer && board[1][1] == currentPlayer && board[2][0] == 0) {
+        playMove(board, 2, 0);
+        return true;
+    }
 
-        /*  - - X
-            *  - - -
-            *  X - -  */
-        if (board[0][2] == currentPlayer && board[2][0] == currentPlayer && board[1][1] == 0) {
-            playMove(board, 1, 1);
-            return true;
-        }
+    /*  - - X
+     *  - - -
+     *  X - -  */
+    if (board[0][2] == currentPlayer && board[2][0] == currentPlayer && board[1][1] == 0) {
+        playMove(board, 1, 1);
+        return true;
+    }
 
-        /*  - - -
-            *  - X -
-            *  X - -  */
-        if (board[1][1] == currentPlayer && board[2][0] == currentPlayer && board[0][2] == 0) {
-            playMove(board, 0, 2);
-            return true;
-        }
+    /*  - - -
+     *  - X -
+     *  X - -  */
+    if (board[1][1] == currentPlayer && board[2][0] == currentPlayer && board[0][2] == 0) {
+        playMove(board, 0, 2);
+        return true;
     }
 
     return false;
@@ -281,5 +284,105 @@ bool Ai::playFirstMove(int board[3][3])
 
     return true;
     */
+}
+
+bool Ai::blockWinningMove(int board[3][3])
+{
+    // checks horizontal rows for win
+    for (int row = 0; row < 3; ++row) {
+
+        // X X - (horizontal)
+        if (board[row][0] == enemyPlayer && board[row][1] == enemyPlayer && board[row][2] == 0) {
+            playMove(board, row, 2);
+            return true;
+        }
+
+        // X - X (horizontal)
+        if (board[row][0] == enemyPlayer && board[row][2] == enemyPlayer && board[row][1] == 0) {
+            playMove(board, row, 1);
+            return true;
+        }
+
+        // - X X (horizontal)
+        if (board[row][1] == enemyPlayer && board[row][2] == enemyPlayer && board[row][0] == 0) {
+            playMove(board, row, 0);
+            return true;
+        }
+    }
+
+    // checks vertical columns for win
+    for (int column = 0; column < 3; ++column) {
+
+        // X X - (vertical)
+        if (board[0][column] == enemyPlayer && board[1][column] == enemyPlayer && board[2][column] == 0) {
+            playMove(board, 2, column);
+            return true;
+        }
+
+        // X - X (vertical)
+        if (board[0][column] == enemyPlayer && board[2][column] == enemyPlayer && board[1][column] == 0) {
+            playMove(board, 1, column);
+            return true;
+        }
+
+        // - X X (vertical)
+        if (board[1][column] == enemyPlayer && board[2][column] == enemyPlayer && board[0][column] == 0) {
+            playMove(board, 0, column);
+            return true;
+        }
+
+    }
+
+    // top left to bottom right
+    /*  X - -
+     *  - X -
+     *  - - -  */
+    if (board[0][0] == enemyPlayer && board[1][1] == enemyPlayer && board[2][2] == 0) {
+        playMove(board, 2, 2);
+        return true;
+    }
+
+    /*  X - -
+     *  - - -
+     *  - - X  */
+    if (board[0][0] == enemyPlayer && board[2][2] == enemyPlayer && board[1][1] == 0) {
+        playMove(board, 1, 1);
+        return true;
+    }
+
+    /*  - - -
+     *  - X -
+     *  - - X  */
+    if (board[1][1] == enemyPlayer && board[2][2] == enemyPlayer && board[0][0] == 0) {
+        playMove(board, 0, 0);
+        return true;
+    }
+
+    // top right to bottom left
+    /*  - - X
+     *  - X -
+     *  - - -  */
+    if (board[0][2] == enemyPlayer && board[1][1] == enemyPlayer && board[2][0] == 0) {
+        playMove(board, 2, 0);
+        return true;
+    }
+
+    /*  - - X
+     *  - - -
+     *  X - -  */
+    if (board[0][2] == enemyPlayer && board[2][0] == enemyPlayer && board[1][1] == 0) {
+        playMove(board, 1, 1);
+        return true;
+    }
+
+    /*  - - -
+     *  - X -
+     *  X - -  */
+    if (board[1][1] == enemyPlayer && board[2][0] == enemyPlayer && board[0][2] == 0) {
+        playMove(board, 0, 2);
+        return true;
+    }
+
+    return false;
 }
 

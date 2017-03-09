@@ -51,8 +51,6 @@ int main()
     checkWin(board, 1);
     */
 
-
-
     loadScoreboard();   // should this be loaded at launch, or before each win/loss/tie/scoreboard view?
 
     // temp testing variables
@@ -74,6 +72,9 @@ int main()
                     break;
             case 2:
                 if (AiOne.playWinningMove(board))
+                    break;
+            case 3:
+                if (AiOne.blockWinningMove(board))
                     break;
             default:
                 cout << "ERROR, nothing happened! AI was unable to play a valid move." << endl;

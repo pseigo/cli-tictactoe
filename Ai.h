@@ -16,6 +16,7 @@ class Ai
 {
     private:
         int currentPlayer;
+        int enemyPlayer;
         int difficulty; // 0: easy 1: medium 2: hard
         char playerSymbol;
 
@@ -45,6 +46,27 @@ class Ai
 
         bool playFirstMove(int board[3][3]);
             // plays if board is empty
+
+        bool blockWinningMove(int board[3][3]);
+
+        /*
+         * Unimplemented functions
+
+        bool playForkMove(int board[3][3]);
+
+        bool blockForkMove(int board[3][3]);
+
+        bool playCenterMove(int board[3][3]);
+
+        bool playOppositeCornerMove(int board[3][3]);
+
+        bool playCornerMove(int board[3][3]);
+
+        bool playSideMove(int board[3][3]);
+
+        bool playRandomMove(int board[3][3]);
+
+        */
 
 
 };
