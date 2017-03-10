@@ -5,10 +5,11 @@
 Ai::Ai() {
     currentPlayer = 2;
     enemyPlayer = 1;
-    difficulty = 2;
+    difficulty = 1;
     playerSymbol = 'O';
 }
 
+// --------------------------------------------------------------------------
 Ai::Ai(int configPlayer, int configDifficulty) {
     currentPlayer = configPlayer;
     difficulty = configDifficulty;
@@ -26,16 +27,77 @@ Ai::Ai(int configPlayer, int configDifficulty) {
     }
 }
 
+// --------------------------------------------------------------------------
 Ai::~Ai()
 {
 
 }
 
+// --------------------------------------------------------------------------
 void Ai::printConfig() const {
     cout << "The AI is playing as player " << currentPlayer << endl;
     cout << "The AI is set to difficulty " << difficulty << endl;
 }
 
+// --------------------------------------------------------------------------
+bool Ai::difficultyCheck(string aiMove)
+{
+    int percentConfig = 1;
+    if (aiMove == "playWinningMove") percentConfig = 0;
+    else if (aiMove == "blockWinningMove") percentConfig = 0;
+    // else if (aiMove == "playForkMove") percentConfig = 3;
+    // else if (aiMove == "blockForkMove") percentConfig = 3;
+    else if (aiMove == "playCenterMove") percentConfig = 1;
+    else if (aiMove == "playOppositeCornerMove") percentConfig = 2;
+    else if (aiMove == "playCornerMove") percentConfig = 2;
+    else if (aiMove == "playSideMove") percentConfig = 1;
+    else cout << "AI difficulty check FAILED. Invalid move name." << endl;
+
+    int easyPercent,
+        mediumPercent,
+        hardPercent;
+
+    switch (percentConfig)
+    {
+    case 0: // playWinningMove, blockWinningMove
+        easyPercent = 40;
+        mediumPercent = 70;
+        hardPercent = 95;
+    case 1: // playCenterMove, playSideMove
+        easyPercent = 20;
+        mediumPercent = 65;
+        hardPercent = 85;
+    case 2: // playOppositeCornerMove, playCornerMove
+        easyPercent = 10;
+        mediumPercent = 60;
+        hardPercent = 80;
+    case 3: // playForkMove, blockForkMove
+        easyPercent = 10;
+        mediumPercent = 35;
+        hardPercent = 70;
+    }
+
+
+    int difficultyRng = rand() % (100 - 1 + 1) + 1;
+    switch (difficulty)
+    {
+    case 0:
+        if (difficultyRng > easyPercent)
+            return false;
+    case 1:
+        if (difficultyRng > mediumPercent)
+            return false;
+    case 2:
+        if (difficultyRng > hardPercent)
+            return false;
+    default:
+        break; // nightmare or no difficulty
+    }
+
+    return true;
+}
+
+// --------------------------------------------------------------------------
 bool Ai::isValidMove(const int board[3][3], int inputMoveX, int inputMoveY) {
     if (board[inputMoveX][inputMoveY] == 0) {
         return true;
@@ -45,6 +107,7 @@ bool Ai::isValidMove(const int board[3][3], int inputMoveX, int inputMoveY) {
     return false;
 }
 
+// --------------------------------------------------------------------------
 bool Ai::isBoardEmpty(const int board[3][3])
 {
     for (int row = 0; row < 3; ++row) {
@@ -59,6 +122,7 @@ bool Ai::isBoardEmpty(const int board[3][3])
     return true;
 }
 
+// --------------------------------------------------------------------------
 void Ai::playMove(int board[3][3], int inputMoveX, int inputMoveY)
 {
     char gridMoveRow;
@@ -85,10 +149,10 @@ void Ai::playMove(int board[3][3], int inputMoveX, int inputMoveY)
     board[inputMoveX][inputMoveY] = currentPlayer;
 }
 
-// if functions return 1, end loop. if 0, keep going through list of priorites
-
+// --------------------------------------------------------------------------
 bool Ai::playWinningMove(int board[3][3]) {
-    bool winner = false;
+    if (!difficultyCheck("playWinningMove"))
+        return false; // difficulty check failed, move skipped
 
     // checks horizontal rows for win
     for (int row = 0; row < 3; ++row) {
@@ -188,106 +252,12 @@ bool Ai::playWinningMove(int board[3][3]) {
     return false;
 }
 
-bool Ai::playFirstMove(int board[3][3])
-{
-    if (!isBoardEmpty(board)) {
-        return false;
-    }
-
-    const int numLocations = 4;
-    vector<pair<int, int> > locations;
-    locations.push_back(make_pair(0, 0));
-    locations.push_back(make_pair(0, 2));
-    locations.push_back(make_pair(2, 0));
-    locations.push_back(make_pair(2, 2));
-
-    random_shuffle(locations.begin(), locations.end());
-
-    int i = 0;
-    for (; i < numLocations; ++i) {
-        if (isValidMove(board, locations[i].first, locations[i].second)) {
-            // do the move
-            playMove(board, locations[i].first, locations[i].second);
-            return true;
-        } // else do nothing & try the next move
-    }
-
-    if (i == numLocations) {
-        // all corners were occupied
-        return false;
-    }
-
-    /* old, inefficient method
-    int inputMoveX,
-        inputMoveY,
-        rngMin = 1,
-        rngMax = 4;
-    bool moveFailure = true;
-
-    int lastCaseAttempt;
-    int caseFail[4] = {0, 0, 0 ,0};
-
-    while (moveFailure) {
-        switch (rand() % (rngMax - rngMin + 1) + rngMin) {
-            case 1:
-                // cout << "top left" << endl;
-                inputMoveX = 0, inputMoveY = 0;
-
-                lastCaseAttempt = 0;
-                break;
-            case 2:
-                // cout << "top right" << endl;
-                inputMoveX = 0, inputMoveY = 2;
-
-                lastCaseAttempt = 1;
-                break;
-            case 3:
-                // cout << "bottom left" << endl;
-                inputMoveX = 2, inputMoveY = 0;
-
-                lastCaseAttempt = 2;
-                break;
-            case 4:
-                // cout << "bottom right" << endl;
-                inputMoveX = 2, inputMoveY = 2;
-
-                lastCaseAttempt = 3;
-                break;
-        }
-
-        // if move was valid, break out of loop. if not, mark that case as invalid.
-        if (checkValidMove(board, inputMoveX, inputMoveY)) {
-            playMove(board, currentPlayer, inputMoveX, inputMoveY);
-            moveFailure = false;
-        } else {
-            caseFail[lastCaseAttempt] = 1;
-        }
-
-        // if every case is invalid, return false to indicate failure
-        bool caseAllFail = true;
-        while (true) {
-            for (int caseCount = 0; caseCount < 4; caseCount++) {
-                if (caseFail[caseCount] == 0) {
-                    caseAllFail = false;
-                    break;
-                }
-            }
-
-            if (caseAllFail) {
-                return false;
-            } else {
-                break;
-            }
-        }
-
-    }
-
-    return true;
-    */
-}
-
+// --------------------------------------------------------------------------
 bool Ai::blockWinningMove(int board[3][3])
 {
+    if (!difficultyCheck("blockWinningMove"))
+        return false; // difficulty check failed, move skipped
+
     // checks horizontal rows for win
     for (int row = 0; row < 3; ++row) {
 
@@ -393,14 +363,63 @@ bool Ai::playForkMove(int board[3][3]);
 
 bool Ai::blockForkMove(int board[3][3]);
 
-bool Ai::playCenterMove(int board[3][3]);
-
-bool Ai::playOppositeCornerMove(int board[3][3]);
-
 */
 
+// --------------------------------------------------------------------------
+bool Ai::playCenterMove(int board[3][3]) {
+    if (!difficultyCheck("playCenterMove"))
+        return false; // difficulty check failed, move skipped
+
+    if (isValidMove(board, 1, 1)) {
+        playMove(board, 1, 1);
+        return true;
+    }
+    return false;
+}
+
+// --------------------------------------------------------------------------
+bool Ai::playOppositeCornerMove(int board[3][3])
+{
+    if (!difficultyCheck("playOppositeCornerMove"))
+        return false; // difficulty check failed, move skipped
+
+    if (board[0][0] == enemyPlayer) {
+        if (isValidMove(board, 2, 2)) {
+            playMove(board, 2, 2);
+            return true;
+        }
+    }
+
+    if (board[0][2] == enemyPlayer) {
+        if (isValidMove(board, 2, 0)) {
+            playMove(board, 2, 0);
+            return true;
+        }
+    }
+
+    if (board[2][0] == enemyPlayer) {
+        if (isValidMove(board, 0, 2)) {
+            playMove(board, 0, 2);
+            return true;
+        }
+    }
+
+    if (board[2][2] == enemyPlayer) {
+        if (isValidMove(board, 0, 0)) {
+            playMove(board, 0, 0);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// --------------------------------------------------------------------------
 bool Ai::playCornerMove(int board[3][3])
 {
+    if (!difficultyCheck("playCornerMove"))
+        return false; // difficulty check failed, move skipped
+
     const int numLocations = 4;
     vector<pair<int, int> > locations;
     locations.push_back(make_pair(0, 0));
@@ -425,10 +444,64 @@ bool Ai::playCornerMove(int board[3][3])
     }
 }
 
-/*
+// --------------------------------------------------------------------------
+bool Ai::playSideMove(int board[3][3]) {
+    if (!difficultyCheck("playSideMove"))
+        return false; // difficulty check failed, move skipped
 
-bool Ai::playSideMove(int board[3][3]);
+    const int numLocations = 4;
+    vector<pair<int, int> > locations;
+    locations.push_back(make_pair(0, 1));
+    locations.push_back(make_pair(1, 0));
+    locations.push_back(make_pair(1, 2));
+    locations.push_back(make_pair(2, 1));
 
-bool Ai::playRandomMove(int board[3][3]);
+    random_shuffle(locations.begin(), locations.end());
 
-*/
+    int i = 0;
+    for (; i < numLocations; ++i) {
+        if (isValidMove(board, locations[i].first, locations[i].second)) {
+            // do the move
+            playMove(board, locations[i].first, locations[i].second);
+            return true;
+        } // else do nothing & try the next move
+    }
+
+    if (i == numLocations) {
+        // all sides were occupied
+        return false;
+    }
+}
+
+// --------------------------------------------------------------------------
+bool Ai::playRandomMove(int board[3][3])
+{
+    const int numLocations = 9;
+    vector<pair<int, int> > locations;
+    locations.push_back(make_pair(0, 0));
+    locations.push_back(make_pair(0, 1));
+    locations.push_back(make_pair(0, 2));
+    locations.push_back(make_pair(1, 0));
+    locations.push_back(make_pair(1, 1));
+    locations.push_back(make_pair(1, 2));
+    locations.push_back(make_pair(2, 0));
+    locations.push_back(make_pair(2, 1));
+    locations.push_back(make_pair(2, 2));
+
+    random_shuffle(locations.begin(), locations.end());
+
+    int i = 0;
+    for (; i < numLocations; ++i) {
+        if (isValidMove(board, locations[i].first, locations[i].second)) {
+            // do the move
+            playMove(board, locations[i].first, locations[i].second);
+            return true;
+        } // else do nothing & try the next move
+    }
+
+    if (i == numLocations) {
+        // all locations were occupied, board is full!
+        cerr << "Unable to play, board is full! (randomMove)" << endl;
+        return false;
+    }
+}
