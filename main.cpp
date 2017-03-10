@@ -56,7 +56,7 @@ int main()
     // new game variables
     int winner = 0;
     int round = 0;
-    // Ai Aione(2, 2); // O, medium
+    // Ai AiOne(2, 2); // O, medium
 
     while (true) {
         // PLAYER 1: pcOne
@@ -67,7 +67,7 @@ int main()
         }
         clearScreen();
 
-        // PLAYER 2: aiOne
+        // PLAYER 2: AiOne
         if (!aiOneTurn(board, round, AiOne))
             break; // break if an error occurs
 
