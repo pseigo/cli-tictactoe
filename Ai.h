@@ -17,7 +17,7 @@ class Ai
     private:
         int currentPlayer;
         int enemyPlayer;
-        int difficulty; // 0: easy 1: medium 2: hard
+        int difficulty; // 0: easy, 1: medium, 2: hard, 3: nightmare
         char playerSymbol;
 
     public:
@@ -44,8 +44,8 @@ class Ai
 
         bool playWinningMove(int board[3][3]);
 
-        bool playFirstMove(int board[3][3]);
-            // plays if board is empty
+        // bool playFirstMove(int board[3][3]);
+        // DEPRECATED: made irrelevant by Ai::playCornerMove
 
         bool blockWinningMove(int board[3][3]);
 
@@ -60,10 +60,14 @@ class Ai
 
         bool playOppositeCornerMove(int board[3][3]);
 
+        */
+
         bool playCornerMove(int board[3][3]);
+            // random move on any corner, same as firstMoveCheck
 
-        bool playSideMove(int board[3][3]);
-
+        //bool playSideMove(int board[3][3]);
+            // random move on any side
+        /*
         bool playRandomMove(int board[3][3]);
 
         */

@@ -60,7 +60,9 @@ int main()
 
     printBoard(board);
 
-    while (int pie = 1) {
+    /*
+    // Ai plays first as O, Player plays second as X
+    while (int aiPc = 1) {
 
         cout << "------- turn " << round + 1 << " -------" << endl;
 
@@ -76,6 +78,27 @@ int main()
             case 3:
                 if (AiOne.blockWinningMove(board))
                     break;
+            case 4:
+                //if (AiOne.playForkMove(board))
+                //    break;
+            case 5:
+                //if (AiOne.blockForkMove(board))
+                //    break;
+            case 6:
+                //if (AiOne.playCenterMove(board))
+                //    break;
+            case 7:
+                //if (AiOne.playOppositeCornerMove(board))
+                //    break;
+            case 8:
+                if (AiOne.playCornerMove(board))
+                    break;
+            case 9:
+                //if (AiOne.playSideMove(board))
+                //    break;
+            case 10:
+                //if (AiOne.playRandomMove(board))
+                //    break;
             default:
                 cout << "ERROR, nothing happened! AI was unable to play a valid move." << endl;
         }
@@ -108,7 +131,89 @@ int main()
             break;
         }
     }
+    */
 
+    // Ai plays first as O, Player plays second as X
+    while (int pcAi = 1) {
+
+        // PLAYER 1: PcOne
+        cout << "------- turn " << round + 1 << " -------" << endl;
+
+        playMove(board, 1);
+        system("cls");  // clear old board and replace with updated board
+        printBoard(board);
+
+        if (checkWin(board, 1)) {
+            break;
+        }
+
+        round++;
+        if (checkTie(round)) {
+            break;
+        }
+
+
+        // PLAYER 2: AiOne
+        // AI Move Priority: breaks if move is successful
+        cout << "------- turn " << round + 1 << " -------" << endl;
+
+        switch (1) {
+            case 1:
+                if (round == 0) {
+                    AiOne.playCornerMove(board);
+                }
+                //if (AiOne.playFirstMove(board))
+                  //  break;
+            case 2:
+                if (AiOne.playWinningMove(board))
+                    break;
+            case 3:
+                if (AiOne.blockWinningMove(board))
+                    break;
+            case 4:
+                //if (AiOne.playForkMove(board))
+                //    break;
+            case 5:
+                //if (AiOne.blockForkMove(board))
+                //    break;
+            case 6:
+                //if (AiOne.playCenterMove(board))
+                //    break;
+            case 7:
+                //if (AiOne.playOppositeCornerMove(board))
+                //    break;
+            case 8:
+                if (AiOne.playCornerMove(board))
+                    break;
+            case 9:
+                //if (AiOne.playSideMove(board))
+                //    break;
+            case 10:
+                //if (AiOne.playRandomMove(board))
+                //    break;
+            default:
+                cerr << "ERROR, nothing happened! AI was unable to play a valid move." << endl;
+                cerr << "\tPlease report this error with a screenshot of the board, thanks!\n" << endl;
+                round = 100;
+        }
+
+        //system("cls");  // clear old board and replace with updated board
+        printBoard(board);
+
+        if (round == 100) {
+            cerr << "Error code 100." << endl;
+            break;
+        }
+
+        if (checkWin(board, 1)) {
+            break;
+        }
+
+        round++;
+        if (checkTie(round)) {
+            break;
+        }
+    }
 
     /* testing functions rn
 

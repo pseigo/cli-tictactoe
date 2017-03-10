@@ -386,3 +386,49 @@ bool Ai::blockWinningMove(int board[3][3])
     return false;
 }
 
+/*
+* Unimplemented functions
+
+bool Ai::playForkMove(int board[3][3]);
+
+bool Ai::blockForkMove(int board[3][3]);
+
+bool Ai::playCenterMove(int board[3][3]);
+
+bool Ai::playOppositeCornerMove(int board[3][3]);
+
+*/
+
+bool Ai::playCornerMove(int board[3][3])
+{
+    const int numLocations = 4;
+    vector<pair<int, int> > locations;
+    locations.push_back(make_pair(0, 0));
+    locations.push_back(make_pair(0, 2));
+    locations.push_back(make_pair(2, 0));
+    locations.push_back(make_pair(2, 2));
+
+    random_shuffle(locations.begin(), locations.end());
+
+    int i = 0;
+    for (; i < numLocations; ++i) {
+        if (isValidMove(board, locations[i].first, locations[i].second)) {
+            // do the move
+            playMove(board, locations[i].first, locations[i].second);
+            return true;
+        } // else do nothing & try the next move
+    }
+
+    if (i == numLocations) {
+        // all corners were occupied
+        return false;
+    }
+}
+
+/*
+
+bool Ai::playSideMove(int board[3][3]);
+
+bool Ai::playRandomMove(int board[3][3]);
+
+*/
