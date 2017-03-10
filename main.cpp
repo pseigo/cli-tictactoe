@@ -45,20 +45,27 @@ int main()
     loadScoreboard();   // should this be loaded at launch, or before each win/loss/tie/scoreboard view?
 
     /*
+     * GAME TEMPLATE!
+
+    // ## START OF GAME
+    clearScreen();
+    cout << "################ \n"
+            "New game started! \n"
+            "################ \n" << endl;
+
     // new game variables
     int winner = 0;
     int round = 0;
-    Ai AiOne(2, 2); // X, hard
+    // Ai Aione(2, 2); // O, medium
 
-    while (1) {
+    while (true) {
         // PLAYER 1: pcOne
         pcOneTurn(board, round, 1);
 
         if (gameOver(board, round, 1)) {
             break;
         }
-
-        system("cls");
+        clearScreen();
 
         // PLAYER 2: aiOne
         if (!aiOneTurn(board, round, AiOne))
@@ -68,6 +75,9 @@ int main()
             break;
         }
     }
+    // ## END OF GAME
+
+     *
     */
 
 
