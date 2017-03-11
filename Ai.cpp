@@ -5,7 +5,7 @@
 Ai::Ai() {
     currentPlayer = 2;
     enemyPlayer = 1;
-    difficulty = 1;
+    difficulty = 2;
     playerSymbol = 'O';
 }
 
@@ -81,13 +81,13 @@ bool Ai::difficultyCheck(string aiMove)
     int difficultyRng = rand() % (100 - 1 + 1) + 1;
     switch (difficulty)
     {
-    case 0:
+    case 1:
         if (difficultyRng > easyPercent)
             return false;
-    case 1:
+    case 2:
         if (difficultyRng > mediumPercent)
             return false;
-    case 2:
+    case 3:
         if (difficultyRng > hardPercent)
             return false;
     default:

@@ -17,7 +17,7 @@ class Ai
     private:
         int currentPlayer;
         int enemyPlayer;
-        int difficulty; // 0: easy, 1: medium, 2: hard, 3: nightmare
+        int difficulty; // 1: easy, 2: medium, 3: hard, 4: nightmare/no difficulty check
         char playerSymbol;
 
     public:
@@ -26,7 +26,7 @@ class Ai
 
         // Overload Constructor
         Ai(int, int);
-            // current player (1: X, 2: 0), difficulty (1-3)
+            // current player (1: X, 2: 0), difficulty (0-2)
 
         // Destructor
         ~Ai();

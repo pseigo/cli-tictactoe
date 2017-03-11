@@ -38,7 +38,8 @@ int main()
 {
     int board[3][3] = { {0, 0, 0}, {0, 0, 0}, {0, 0, 0} };
     bool gameRunning = 1,
-        saveConfig = 0;
+        saveConfig = 0,
+        saveConfigDontAsk = 0;
 
     srand( unsigned(time(0)) ); // AI rng seed
 
@@ -87,6 +88,7 @@ int main()
         int choicePcAi,  // 1: pc/ai, 2: pc/pc
             choicePcOrder, // 1: pc 1, 2: pc 2, 3: random
             choicePcSymbol, // 1: X (1/2), 2: O (3/4)
+            choiceAiSymbol, // opposite of choicePcSymbol
             choicePcDifficulty;
 
         clearScreen();
@@ -147,6 +149,12 @@ int main()
                 }
             }
 
+            if (choicePcSymbol == 1) {
+                choiceAiSymbol = 2;
+            } else {
+                choiceAiSymbol = 1;
+            }
+
             cout << "Play on Easy, Medium, or Hard? \n"
                     "\t1: Easy    2: Medium    3: Hard" << endl;
 
@@ -175,8 +183,8 @@ int main()
 
 
         // pc or ai? 1: pc/ai, 2: pc/pc
-        if (choicePcAi == 2) {   // pc/pc
-            // ## START OF GAME
+        if (choicePcAi == 2) {
+            // ## START OF GAME: pc/pc
             clearScreen();
             cout << "################ \n"
                     "New game started! \n"
@@ -204,82 +212,142 @@ int main()
                 clearScreen();
             }
             // ## END OF GAME
+
         } else {    // pc/ai
 
             // Who goes first?
             if (choicePcOrder == 1) {   // pc goes first
+                // ## START OF GAME: pc/ai, pc goes first
+                clearScreen();
+                cout << "################ \n"
+                        "New game started! \n"
+                        "################ \n" << endl;
 
-                // What symbol is PC?
-                if (choicePcSymbol == 1) {  // pc is X (1)
-                    // pc is X (1)
-                    // assign O to AI (3)
-                    // ## START LOOP: pc/ai, pc goes first, pc is X
+                // new game variables
+                int winner = 0;
+                int round = 0;
+                Ai AiOne(choiceAiSymbol, choicePcDifficulty);
 
-                    cout << "PATH NOT YET IMPLEMENTED. \nIntended purpose: ";
-                    cout << "pc/ai, pc goes first, pc is X" << endl;
+                while (true) {
+                    // PLAYER 1: pcOne
+                    pcOneTurn(board, round, choicePcSymbol);
 
+                    if (gameOver(board, round, choicePcSymbol)) {
+                        break;
+                    }
+                    clearScreen();
 
-                } else {    // pc is O (3)
-                    // pc is O (3)
-                    // assign X to AI (1)
-                    // ## START LOOP: pc/ai, pc goes first, pc is O
+                    // PLAYER 2: AiOne
+                    if (!aiOneTurn(board, round, AiOne))
+                        break; // break if an error occurs
 
-                    cout << "PATH NOT YET IMPLEMENTED. \nIntended purpose: ";
-                    cout << "pc/ai, pc goes first, pc is O" << endl;
+                    if (gameOver(board, round, choicePcSymbol)) {
+                        break;
+                    }
                 }
+                // ## END OF GAME
 
             } else if (choicePcOrder == 2) {    // ai goes first
+                // ## START OF GAME: pc/ai, ai goes first
+                clearScreen();
+                cout << "################ \n"
+                        "New game started! \n"
+                        "################ \n" << endl;
 
-                // What symbol is PC?
-                if (choicePcSymbol == 1) {  // pc is X (1)
-                    // pc is X (1)
-                    // assign O to AI (3)
-                    // ## START LOOP: pc/ai, ai goes first, pc is X
+                // new game variables
+                int winner = 0;
+                int round = 0;
+                Ai AiOne(choiceAiSymbol, choicePcDifficulty);
 
-                    cout << "PATH NOT YET IMPLEMENTED. \nIntended purpose: ";
-                    cout << "pc/ai, ai goes first, pc is X" << endl;
+                while (true) {
+                    // PLAYER 1: AiOne
+                    if (!aiOneTurn(board, round, AiOne))
+                        break; // break if an error occurs
 
-                } else {    // pc is O (3)
-                    // pc is O (3)
-                    // assign X to AI (1)
-                    // ## START LOOP: pc/ai, ai goes first, pc is O
+                    if (gameOver(board, round, choicePcSymbol)) {
+                        break;
+                    }
 
-                    cout << "PATH NOT YET IMPLEMENTED. \nIntended purpose: ";
-                    cout << "pc/ai, ai goes first, pc is O" << endl;
+                    // PLAYER 2: pcOne
+                    pcOneTurn(board, round, choicePcSymbol);
+
+                    if (gameOver(board, round, choicePcSymbol)) {
+                        break;
+                    }
+                    clearScreen();
+
                 }
+                // ## END OF GAME
+
 
             } else {    // random order
+                // ## START LOOP: pc/ai, order is random, pc is X
 
-                // What symbol is PC?
-                if (choicePcSymbol == 1) {  // pc is X (1)
-                    // pc is X (1)
-                    // assign O to AI (3)
-                    // ## START LOOP: pc/ai, order is random, pc is X
-
-                    cout << "PATH NOT YET IMPLEMENTED. \nIntended purpose: ";
-                    cout << "pc/ai, order is random, pc is X" << endl;
-
+                if ( (rand() % (3 - 2 + 1) + 2) == 2) {
                     // random play order loop #1
+                    // ## START OF GAME: pc/ai, pc goes first
+                    clearScreen();
+                    cout << "################ \n"
+                            "New game started! \n"
+                            "################ \n" << endl;
 
+                    // new game variables
+                    int winner = 0;
+                    int round = 0;
+                    Ai AiOne(choiceAiSymbol, choicePcDifficulty);
 
+                    while (true) {
+                        // PLAYER 1: pcOne
+                        pcOneTurn(board, round, choicePcSymbol);
+
+                        if (gameOver(board, round, choicePcSymbol)) {
+                            break;
+                        }
+                        clearScreen();
+
+                        // PLAYER 2: AiOne
+                        if (!aiOneTurn(board, round, AiOne))
+                            break; // break if an error occurs
+
+                        if (gameOver(board, round, choicePcSymbol)) {
+                            break;
+                        }
+                    }
+                    // ## END OF GAME
+                } else {
                     // random play order loop #2
+                    // ## START OF GAME: pc/ai, ai goes first
+                    clearScreen();
+                    cout << "################ \n"
+                            "New game started! \n"
+                            "################ \n" << endl;
 
+                    // new game variables
+                    int winner = 0;
+                    int round = 0;
+                    Ai AiOne(choiceAiSymbol, choicePcDifficulty);
 
-                } else {    // pc is O (3)
-                    // pc is O (3)
-                    // assign X to AI (1)
-                    // ## START LOOP: pc/ai, order is random, pc is O
+                    while (true) {
+                        // PLAYER 1: AiOne
+                        if (!aiOneTurn(board, round, AiOne))
+                            break; // break if an error occurs
 
-                    cout << "PATH NOT YET IMPLEMENTED. \nIntended purpose: ";
-                    cout << "pc/ai, order is random, pc is O" << endl;
+                        if (gameOver(board, round, choicePcSymbol)) {
+                            break;
+                        }
 
-                    // random play order loop #1
+                        // PLAYER 2: pcOne
+                        pcOneTurn(board, round, choicePcSymbol);
 
+                        if (gameOver(board, round, choicePcSymbol)) {
+                            break;
+                        }
+                        clearScreen();
 
-                    // random play order loop #2
-
-
+                    }
+                    // ## END OF GAME
                 }
+
 
             } // end of 'Who goes first?' branch
         } // end of pc/ai branch
@@ -316,7 +384,7 @@ int main()
         if (gameRunning == 0) {
             saveConfig = 0;
         } else {
-            if (choiceSaveConfig != 3) { // ask to save config if option 3 hasn't been chosen
+            if (!saveConfigDontAsk) { // ask to save config if option 3 hasn't been chosen
                 cout << "Would you like to use the same game settings as before? \n"
                     "\t1: Yes    2: No    3: Yes, and don't ask until next game launch" << endl;
 
@@ -333,11 +401,15 @@ int main()
                     }
                 }
 
-                if (choiceSaveConfig == 3) {
-                    saveConfig = 1;
+                if (choiceSaveConfig == 2) {
+                    saveConfig = 0;
                 } else {
-                    saveConfig = (choiceSaveConfig - 1);
+                    saveConfig = 1;
+                    if (choiceSaveConfig == 3) {
+                        saveConfigDontAsk = 1;
+                    }
                 }
+
             }
         }
 
