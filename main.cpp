@@ -186,9 +186,9 @@ int main()
         if (choicePcAi == 2) {
             // ## START OF GAME: pc/pc
             clearScreen();
-            cout << "################ \n"
-                    "New game started! \n"
-                    "################ \n" << endl;
+            cout << "  ################ \n"
+                    "  New game started! \n"
+                    "  ################ \n" << endl;
 
             // new game variables
             int winner = 0;
@@ -219,9 +219,9 @@ int main()
             if (choicePcOrder == 1) {   // pc goes first
                 // ## START OF GAME: pc/ai, pc goes first
                 clearScreen();
-                cout << "################ \n"
-                        "New game started! \n"
-                        "################ \n" << endl;
+                cout << "  ################ \n"
+                        "  New game started! \n"
+                        "  ################ \n" << endl;
 
                 // new game variables
                 int winner = 0;
@@ -250,9 +250,9 @@ int main()
             } else if (choicePcOrder == 2) {    // ai goes first
                 // ## START OF GAME: pc/ai, ai goes first
                 clearScreen();
-                cout << "################ \n"
-                        "New game started! \n"
-                        "################ \n" << endl;
+                cout << "  ################ \n"
+                        "  New game started! \n"
+                        "  ################ \n" << endl;
 
                 // new game variables
                 int winner = 0;
@@ -287,9 +287,9 @@ int main()
                     // random play order loop #1
                     // ## START OF GAME: pc/ai, pc goes first
                     clearScreen();
-                    cout << "################ \n"
-                            "New game started! \n"
-                            "################ \n" << endl;
+                    cout << "  ################ \n"
+                            "  New game started! \n"
+                            "  ################ \n" << endl;
 
                     // new game variables
                     int winner = 0;
@@ -318,9 +318,9 @@ int main()
                     // random play order loop #2
                     // ## START OF GAME: pc/ai, ai goes first
                     clearScreen();
-                    cout << "################ \n"
-                            "New game started! \n"
-                            "################ \n" << endl;
+                    cout << "  ################ \n"
+                            "  New game started! \n"
+                            "  ################ \n" << endl;
 
                     // new game variables
                     int winner = 0;
