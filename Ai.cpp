@@ -125,7 +125,7 @@ bool Ai::isBoardEmpty(const int board[3][3])
 // --------------------------------------------------------------------------
 void Ai::playMove(int board[3][3], int inputMoveX, int inputMoveY)
 {
-    char gridMoveRow;
+    char gridMoveRow = 'N';
     int gridMoveColumn;
 
     // converts to readable grid coordinates for output
@@ -438,10 +438,8 @@ bool Ai::playCornerMove(int board[3][3])
         } // else do nothing & try the next move
     }
 
-    if (i == numLocations) {
-        // all corners were occupied
-        return false;
-    }
+    // all corners were occupied
+    return false;
 }
 
 // --------------------------------------------------------------------------
@@ -467,10 +465,8 @@ bool Ai::playSideMove(int board[3][3]) {
         } // else do nothing & try the next move
     }
 
-    if (i == numLocations) {
-        // all sides were occupied
-        return false;
-    }
+    // all sides were occupied
+    return false;
 }
 
 // --------------------------------------------------------------------------
@@ -499,9 +495,7 @@ bool Ai::playRandomMove(int board[3][3])
         } // else do nothing & try the next move
     }
 
-    if (i == numLocations) {
-        // all locations were occupied, board is full!
-        cerr << "Unable to play, board is full! (randomMove)" << endl;
-        return false;
-    }
+    // all locations were occupied, board is full!
+    cerr << "Unable to play, board is full! (randomMove)" << endl;
+    return false;
 }

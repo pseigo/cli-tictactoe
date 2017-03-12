@@ -16,8 +16,8 @@ int scoreboardWins = 0,
 // Function Prototypes
 void pcOneTurn(int board[3][3], int round, int player);
 void pcTwoTurn(int board[3][3], int round, int player);
-bool aiOneTurn(int board[3][3], int round, Ai AiOne);
-bool aiTwoTurn(int board[3][3], int round, Ai AiTwo);
+bool aiOneTurn(int board[3][3], int &round, Ai AiOne);
+bool aiTwoTurn(int board[3][3], int &round, Ai AiTwo);
 
 bool gameOver(const int board[3][3], int &round, int pcPlayer); // return, 0: game isn't over, 1: game is over
 void resetBoard(int board[3][3]);   // resets all board values to 0 (blank)
@@ -90,6 +90,9 @@ int main()
             choicePcSymbol, // 1: X (1/2), 2: O (3/4)
             choiceAiSymbol, // opposite of choicePcSymbol
             choicePcDifficulty;
+
+        /// IDEA: add menu
+        /// 0: quit, 1: play game, 2: scoreboard
 
         clearScreen();
         cout << "\t####################### \n"
@@ -176,11 +179,8 @@ int main()
         // ## START OF saveConfig loop
         do
         {
-
         // game variables init
         resetBoard(board);
-        int winner = 0;
-
 
         // pc or ai? 1: pc/ai, 2: pc/pc
         if (choicePcAi == 2) {
@@ -190,8 +190,6 @@ int main()
                     "  New game started! \n"
                     "  ################ \n" << endl;
 
-            // new game variables
-            int winner = 0;
             int round = 0;
 
             while (true) {
@@ -223,8 +221,6 @@ int main()
                         "  New game started! \n"
                         "  ################ \n" << endl;
 
-                // new game variables
-                int winner = 0;
                 int round = 0;
                 Ai AiOne(choiceAiSymbol, choicePcDifficulty);
 
@@ -254,8 +250,6 @@ int main()
                         "  New game started! \n"
                         "  ################ \n" << endl;
 
-                // new game variables
-                int winner = 0;
                 int round = 0;
                 Ai AiOne(choiceAiSymbol, choicePcDifficulty);
 
@@ -291,8 +285,6 @@ int main()
                             "  New game started! \n"
                             "  ################ \n" << endl;
 
-                    // new game variables
-                    int winner = 0;
                     int round = 0;
                     Ai AiOne(choiceAiSymbol, choicePcDifficulty);
 
@@ -322,8 +314,6 @@ int main()
                             "  New game started! \n"
                             "  ################ \n" << endl;
 
-                    // new game variables
-                    int winner = 0;
                     int round = 0;
                     Ai AiOne(choiceAiSymbol, choicePcDifficulty);
 
@@ -444,7 +434,7 @@ void pcTwoTurn(int board[3][3], int round, int player)
 }
 
 // --------------------------------------------------------------------------
-bool aiOneTurn(int board[3][3], int round, Ai AiOne)
+bool aiOneTurn(int board[3][3], int &round, Ai AiOne)
 {
     cout << "------- turn " << round + 1 << " -------" << endl;
     printBoard(board);
@@ -452,8 +442,8 @@ bool aiOneTurn(int board[3][3], int round, Ai AiOne)
     switch (1) {
         case 1:
             if (round == 0) {
-                AiOne.playCornerMove(board);
-                break;
+                if (AiOne.playCornerMove(board))
+                    break;
             }
         case 2:
             if (AiOne.playWinningMove(board))
@@ -486,18 +476,14 @@ bool aiOneTurn(int board[3][3], int round, Ai AiOne)
             cerr << "ERROR, nothing happened! AI was unable to play a valid move." << endl;
             cerr << "\tPlease report this error with a screenshot of the board, thanks!\n" << endl;
             round = 100;
-    }
-
-    if (round == 100) {
-        cerr << "Error code 100." << endl;
-        return false;
+            return false;
     }
 
     return true;
 }
 
 // --------------------------------------------------------------------------
-bool aiTwoTurn(int board[3][3], int round, Ai AiTwo)
+bool aiTwoTurn(int board[3][3], int &round, Ai AiTwo)
 {
     cout << "------- turn " << round + 1 << " -------" << endl;
     printBoard(board);
@@ -505,8 +491,8 @@ bool aiTwoTurn(int board[3][3], int round, Ai AiTwo)
     switch (1) {
         case 1:
             if (round == 0) {
-                AiTwo.playCornerMove(board);
-                break;
+                if (AiTwo.playCornerMove(board))
+                    break;
             }
         case 2:
             if (AiTwo.playWinningMove(board))
@@ -539,11 +525,7 @@ bool aiTwoTurn(int board[3][3], int round, Ai AiTwo)
             cerr << "ERROR, nothing happened! AI was unable to play a valid move." << endl;
             cerr << "\tPlease report this error with a screenshot of the board, thanks!\n" << endl;
             round = 100;
-    }
-
-    if (round == 100) {
-        cerr << "Error code 100." << endl;
-        return false;
+            return false;
     }
 
     return true;
