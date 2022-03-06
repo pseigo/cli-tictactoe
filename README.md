@@ -1,4 +1,4 @@
-# Tic Tac Toe - Basic Console Game in C++
+# Tic Tac Toe - Command Line Game
 
 Command line Tic Tac Toe game with AI made for a high school computer science course.
 
