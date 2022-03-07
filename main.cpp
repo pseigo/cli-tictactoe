@@ -840,6 +840,9 @@ void resetScoreboard()
 
 void clearScreen()
 {
-    system("clear");
+#if defined(_WIN32)
     system("cls");
+#elif defined(__linux__) || defined(__APPLE__)
+    system("clear");
+#endif
 }
